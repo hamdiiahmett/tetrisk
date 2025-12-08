@@ -48,9 +48,10 @@ Engelleyici bloklari yok etmek için o bloğun hem SATIRINI hem de SÜTUNUNU ayn
         TUTORIAL_BODY:
             `Goal: Place the incoming blocks on the grid. Fill rows or columns to clear them and score points. If you run out of space to place a block, the game is over! To destroy obstacle blocks, you must fill BOTH the ROW and COLUMN of that block at the same time!
 You can choose a Risk Card anytime: Lucky Card: Grants +100 Points. Unlucky Card: Deducts -50 Points and places 1 obstacle block.
-When you reach 5000 points, taking risks becomes mandatory! Lucky: +250 Points. Unlucky: -100 Points and 2 obstacle blocks.
+When you reach 5000 points, taking risks becomes mandatory! Lucky: +250 Points. Unlucky: -100 Points and 2 obstacle blocks.`
     }
 };
+
 
 let currentPaletteIndex = 0;
 function getTheme() { return PALETTES[currentPaletteIndex]; }
