@@ -1,11 +1,11 @@
 @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&subset=latin-ext&display=swap');
 
 :root {
-    /* Default Palette (Soft Red) - Will be updated by JS */
-    --bg-color: #1a0505;
-    --gb-dark: #331111;
-    --gb-light: #cc4444;
-    --gb-pale: #ffaaaa;
+    /* Default Palette (Peachy Cream) */
+    --bg-color: #fff8f0;
+    --gb-dark: #ffeebb;
+    --gb-light: #ffaa44;
+    --gb-pale: #8b4513;
 }
 
 body {

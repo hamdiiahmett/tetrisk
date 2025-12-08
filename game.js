@@ -1,13 +1,13 @@
 // --- Constants & Config ---
 const PALETTES = [
-    // 0: Soft Red
-    { BG: 0x1a0505, GRID_EMPTY: 0x331111, GRID_FILLED: 0xcc4444, TEXT: '#ffaaaa', CSS: { bg: '#1a0505', dark: '#331111', light: '#cc4444', pale: '#ffaaaa', grad1: '#4a1010', grad2: '#000000' } },
-    // 1: Retro Green
-    { BG: 0x0f380f, GRID_EMPTY: 0x306230, GRID_FILLED: 0x9bbc0f, TEXT: '#8bac0f', CSS: { bg: '#0f380f', dark: '#306230', light: '#9bbc0f', pale: '#8bac0f', grad1: '#1a330a', grad2: '#000000' } },
-    // 2: Cyber Blue
-    { BG: 0x05051a, GRID_EMPTY: 0x111133, GRID_FILLED: 0x4444cc, TEXT: '#aaaaff', CSS: { bg: '#05051a', dark: '#111133', light: '#4444cc', pale: '#aaaaff', grad1: '#0a0a33', grad2: '#000000' } },
-    // 3: Warm Amber
-    { BG: 0x2b1d0e, GRID_EMPTY: 0x4d3319, GRID_FILLED: 0xffaa00, TEXT: '#ffcc88', CSS: { bg: '#2b1d0e', dark: '#4d3319', light: '#ffaa00', pale: '#ffcc88', grad1: '#3d2605', grad2: '#000000' } }
+    // 0: Peachy Cream (Warm Pastel - Default)
+    { BG: 0xfff8f0, GRID_EMPTY: 0xffeebb, GRID_FILLED: 0xffaa44, TEXT: '#8b4513', CSS: { bg: '#fff8f0', dark: '#ffeebb', light: '#ffaa44', pale: '#8b4513', grad1: '#fff8f0', grad2: '#fff2e6' } },
+    // 1: Berry Smoothie (Sweet Pink)
+    { BG: 0xfff0f5, GRID_EMPTY: 0xffddee, GRID_FILLED: 0xff66b2, TEXT: '#884466', CSS: { bg: '#fff0f5', dark: '#ffcce6', light: '#ff66b2', pale: '#884466', grad1: '#fff0f5', grad2: '#ffe6f2' } },
+    // 2: Minty Fresh (Pastel Green) - Adjusted Text for Contrast
+    { BG: 0xf0fff4, GRID_EMPTY: 0xd9ffe6, GRID_FILLED: 0x00cc66, TEXT: '#006633', CSS: { bg: '#f0fff4', dark: '#d9ffe6', light: '#00cc66', pale: '#006633', grad1: '#f0fff4', grad2: '#e6ffec' } },
+    // 3: Sky Dream (Soft Blue)
+    { BG: 0xf0f8ff, GRID_EMPTY: 0xddeeff, GRID_FILLED: 0x33bbff, TEXT: '#004488', CSS: { bg: '#f0f8ff', dark: '#ddeeff', light: '#33bbff', pale: '#004488', grad1: '#f0f8ff', grad2: '#e6f2ff' } }
 ];
 
 const TEXTS = {
@@ -35,6 +35,9 @@ KRİTİK NOKTA (5000 PUAN)
 Şanslı: +250 Puan.
 Şanssız: -100 Puan ve 2 engelleyici blok.
 
+ENGELLEYİCİ BLOKLAR
+Yok etmek için o bloğun hem SATIRINI hem de SÜTUNUNU aynı anda doldurmalısın!
+
 İyi Eğlenceler!`
     },
     en: {
@@ -60,6 +63,9 @@ TURNING POINT (5000 POINTS)
 After 5000 points, taking risks becomes mandatory!
 Lucky: +250 Points.
 Unlucky: -100 Points and 2 obstacle blocks.
+
+OBSTACLE BLOCKS
+To destroy them, you must fill BOTH the ROW and COLUMN intersecting the block at the same time!
 
 Have Fun!`
     }
@@ -189,14 +195,14 @@ class GameScene extends Phaser.Scene {
         // Frozen
         if (this.textures.exists('block_frozen')) this.textures.remove('block_frozen');
         graphics.clear();
-        graphics.fillStyle(0x00FFFF, 1);
+        graphics.fillStyle(0x888888, 1); // Neutral gray
         graphics.fillRect(0, 0, BLOCK_SIZE, BLOCK_SIZE);
-        graphics.lineStyle(4, 0xFFFFFF, 1);
+        graphics.lineStyle(4, 0x333333, 1);
         graphics.strokeRect(2, 2, BLOCK_SIZE - 4, BLOCK_SIZE - 4);
         graphics.lineStyle(3, 0x000000, 0.5);
         graphics.beginPath();
-        graphics.moveTo(10, 10); graphics.lineTo(BLOCK_SIZE - 10, BLOCK_SIZE - 10);
-        graphics.moveTo(BLOCK_SIZE - 10, 10); graphics.lineTo(10, BLOCK_SIZE - 10);
+        graphics.moveTo(5, 5); graphics.lineTo(BLOCK_SIZE - 5, BLOCK_SIZE - 5);
+        graphics.moveTo(BLOCK_SIZE - 5, 5); graphics.lineTo(5, BLOCK_SIZE - 5);
         graphics.strokePath();
         graphics.generateTexture('block_frozen', BLOCK_SIZE, BLOCK_SIZE);
 
@@ -241,6 +247,11 @@ class GameScene extends Phaser.Scene {
         // CSS Vars
         document.documentElement.style.setProperty('--bg-grad-1', theme.CSS.grad1);
         document.documentElement.style.setProperty('--bg-grad-2', theme.CSS.grad2);
+
+        document.documentElement.style.setProperty('--bg-color', theme.CSS.bg);
+        document.documentElement.style.setProperty('--gb-dark', theme.CSS.dark);
+        document.documentElement.style.setProperty('--gb-light', theme.CSS.light);
+        document.documentElement.style.setProperty('--gb-pale', theme.CSS.pale);
 
         // Phaser Colors
         this.cameras.main.setBackgroundColor(theme.BG);
@@ -307,7 +318,7 @@ class GameScene extends Phaser.Scene {
         const overlay = this.add.container(0, 0);
         const w = this.game.config.width, h = this.game.config.height;
 
-        let bg = this.add.rectangle(w / 2, h / 2, w, h, 0x000000, 0.9).setInteractive();
+        let bg = this.add.rectangle(w / 2, h / 2, w, h, 0xffffff, 0.9).setInteractive(); // Whiteish
         overlay.add(bg);
 
         let title = this.add.text(w / 2, h / 2 - 160, this.getText('PICK_CARD'), { fontFamily: '"Press Start 2P"', fontSize: '24px', color: getTheme().TEXT }).setOrigin(0.5);
@@ -363,7 +374,7 @@ class GameScene extends Phaser.Scene {
             onComplete: () => {
                 cardContainer.removeAll(true);
                 let face = this.add.rectangle(0, 0, 100, 140, theme.GRID_FILLED).setStrokeStyle(2, theme.TEXT);
-                let txt = this.add.text(0, 0, msg, { fontFamily: '"Press Start 2P"', fontSize: '18px', color: theme.BG, align: 'center' }).setOrigin(0.5);
+                let txt = this.add.text(0, 0, msg, { fontFamily: '"Press Start 2P"', fontSize: '18px', color: '#ffffff', align: 'center' }).setOrigin(0.5);
                 cardContainer.add([face, txt]);
                 this.tweens.add({
                     targets: cardContainer, scaleX: 1, duration: 150,
@@ -508,25 +519,65 @@ class GameScene extends Phaser.Scene {
     }
 
     checkLines() {
-        let fullRows = [], fullCols = [];
-        for (let r = 0; r < GRID_SIZE; r++) { if (gameState.grid[r].every(val => val !== 0)) fullRows.push(r); }
+        let candidateRows = [], candidateCols = [];
+
+        // 1. Identify all fully filled rows/cols (ignoring frozen status for a moment)
+        for (let r = 0; r < GRID_SIZE; r++) { if (gameState.grid[r].every(val => val !== 0)) candidateRows.push(r); }
         for (let c = 0; c < GRID_SIZE; c++) {
             let full = true;
             for (let r = 0; r < GRID_SIZE; r++) { if (gameState.grid[r][c] === 0) { full = false; break; } }
-            if (full) fullCols.push(c);
+            if (full) candidateCols.push(c);
         }
-        if (fullRows.length > 0 || fullCols.length > 0) {
-            this.clearLines(fullRows, fullCols);
+
+        // 2. Filter Rows: A row is valid ONLY IF it has no 'active' frozen blocks (blocks that are not being cleared by a a column)
+        // If a row contains a frozen block, that frozen block needs the column to be in candidateCols. If not, the WHOLE ROW is blocked.
+        let validRows = candidateRows.filter(r => {
+            for (let c = 0; c < GRID_SIZE; c++) {
+                if (gameState.grid[r][c] === 2) {
+                    // Frozen block found. Is the intersecting column also full?
+                    if (!candidateCols.includes(c)) return false; // Blocked!
+                }
+            }
+            return true;
+        });
+
+        // 3. Filter Cols: Similar logic.
+        let validCols = candidateCols.filter(c => {
+            for (let r = 0; r < GRID_SIZE; r++) {
+                if (gameState.grid[r][c] === 2) {
+                    if (!candidateRows.includes(r)) return false; // Blocked!
+                }
+            }
+            return true;
+        });
+
+        if (validRows.length > 0 || validCols.length > 0) {
+            this.clearLines(validRows, validCols);
             SOUNDS.CLEAR();
-            this.updateScore((fullRows.length + fullCols.length) * 100);
+            this.updateScore((validRows.length + validCols.length) * 100);
         }
     }
 
     clearLines(rows, cols) {
         let cellsToClear = [];
         let frozenCleared = false;
-        rows.forEach(r => { for (let c = 0; c < GRID_SIZE; c++) { cellsToClear.push({ r, c }); if (gameState.grid[r][c] === 2) frozenCleared = true; } });
-        cols.forEach(c => { for (let r = 0; r < GRID_SIZE; r++) { cellsToClear.push({ r, c }); if (gameState.grid[r][c] === 2) frozenCleared = true; } });
+
+        // Since we already validated the locking logic in checkLines, we can just clear everything in valid rows/cols.
+        // Frozen blocks in these lists are strictly those that met the condition.
+
+        rows.forEach(r => {
+            for (let c = 0; c < GRID_SIZE; c++) {
+                cellsToClear.push({ r, c });
+                if (gameState.grid[r][c] === 2) frozenCleared = true;
+            }
+        });
+        cols.forEach(c => {
+            for (let r = 0; r < GRID_SIZE; r++) {
+                cellsToClear.push({ r, c });
+                if (gameState.grid[r][c] === 2) frozenCleared = true;
+            }
+        });
+
         let unique = new Set(cellsToClear.map(o => `${o.r},${o.c}`));
         unique.forEach(key => {
             let [r, c] = key.split(',').map(Number);
@@ -537,7 +588,6 @@ class GameScene extends Phaser.Scene {
         });
 
         if (frozenCleared) {
-            // Unpause immediately if we cleared at least one frozen block
             gameState.frozenBlock = null;
             this.secondsLeft = 60;
         }
@@ -571,10 +621,10 @@ class GameScene extends Phaser.Scene {
 
     showGameOver() {
         const w = this.game.config.width, h = this.game.config.height;
-        let overlay = this.add.rectangle(w / 2, h / 2, w, h, 0x000000, 0.8).setInteractive();
+        let overlay = this.add.rectangle(w / 2, h / 2, w, h, 0xffffff, 0.9).setInteractive(); // Light overlay
         let txt = this.add.text(w / 2, h / 2 - 50, this.getText('GAME_OVER'), { fontFamily: '"Press Start 2P"', fontSize: '40px', color: '#ff0000' }).setOrigin(0.5);
-        let scoreTxt = this.add.text(w / 2, h / 2 + 20, `${this.getText('SCORE')}: ${gameState.score}`, { fontFamily: '"Press Start 2P"', fontSize: '20px', color: '#ffffff' }).setOrigin(0.5);
-        let btn = this.add.text(w / 2, h / 2 + 100, '> ' + this.getText('RESTART') + ' <', { fontFamily: '"Press Start 2P"', fontSize: '20px', color: '#ffffff' }).setOrigin(0.5).setInteractive({ useHandCursor: true });
+        let scoreTxt = this.add.text(w / 2, h / 2 + 20, `${this.getText('SCORE')}: ${gameState.score}`, { fontFamily: '"Press Start 2P"', fontSize: '20px', color: getTheme().TEXT }).setOrigin(0.5);
+        let btn = this.add.text(w / 2, h / 2 + 100, '> ' + this.getText('RESTART') + ' <', { fontFamily: '"Press Start 2P"', fontSize: '20px', color: getTheme().TEXT }).setOrigin(0.5).setInteractive({ useHandCursor: true });
         this.tweens.add({ targets: btn, alpha: 0.5, duration: 500, yoyo: true, repeat: -1 });
         btn.on('pointerdown', () => this.restartGame());
     }
@@ -602,7 +652,7 @@ class GameScene extends Phaser.Scene {
         const w = this.game.config.width, h = this.game.config.height, theme = getTheme();
         let cont = this.add.container(0, 0);
 
-        // Menu BG set to theme BG
+        // Menu BG 
         let bg = this.add.rectangle(w / 2, h / 2, 380, 480, theme.BG).setStrokeStyle(4, theme.GRID_FILLED);
 
         let title = this.add.text(w / 2, h / 2 - 180, this.getText('PAUSED'), { fontFamily: '"Press Start 2P"', fontSize: '24px', color: theme.TEXT }).setOrigin(0.5);
@@ -631,11 +681,11 @@ class GameScene extends Phaser.Scene {
             this.bestText.setText(`${this.getText('BEST')}: ${gameState.bestScore}`);
         });
 
-        let btnTutorial = this.add.text(w / 2, h / 2 + 30, this.getText('TUTORIAL_BTN'), { fontFamily: '"Press Start 2P"', fontSize: '16px', color: '#ffffff' }).setOrigin(0.5).setInteractive();
+        // Use theme.TEXT for buttons instead of white, for visibility on pastel options
+        let btnTutorial = this.add.text(w / 2, h / 2 + 30, this.getText('TUTORIAL_BTN'), { fontFamily: '"Press Start 2P"', fontSize: '16px', color: theme.TEXT }).setOrigin(0.5).setInteractive();
         btnTutorial.on('pointerdown', () => { SOUNDS.BUTTON(); this.showTutorial(); });
 
-        // Restart Button: Forced White/Bright for visibility
-        let btnRestart = this.add.text(w / 2, h / 2 + 100, `> ${this.getText('RESTART')}`, { fontFamily: '"Press Start 2P"', fontSize: '18px', color: '#ffffff' }).setOrigin(0.5).setInteractive();
+        let btnRestart = this.add.text(w / 2, h / 2 + 100, `> ${this.getText('RESTART')}`, { fontFamily: '"Press Start 2P"', fontSize: '18px', color: theme.TEXT }).setOrigin(0.5).setInteractive();
         btnRestart.on('pointerdown', () => { SOUNDS.BUTTON(); this.restartGame(); });
 
         let btnResume = this.add.text(w / 2, h / 2 + 160, `> ${this.getText('RESUME')}`, { fontFamily: '"Press Start 2P"', fontSize: '18px', color: theme.TEXT }).setOrigin(0.5).setInteractive();
