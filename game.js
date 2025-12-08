@@ -52,6 +52,7 @@ When you reach 5000 points, taking risks becomes mandatory! Lucky: +250 Points. 
     }
 };
 
+
 let currentPaletteIndex = 0;
 function getTheme() { return PALETTES[currentPaletteIndex]; }
 
