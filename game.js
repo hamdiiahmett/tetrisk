@@ -22,21 +22,18 @@ const TEXTS = {
         TUTORIAL_BODY:
             `Amaç: Gelen blokları alana yerleştir.
 Satır veya sütunları doldurarak patlat ve puan topla.
+Blokları koyacak yerin kalmazsa oyun biter!
+Engelleyici bloklari yok etmek için o bloğun hem SATIRINI hem de SÜTUNUNU aynı anda doldurmalısın!
 
-Dikkat: Blokları koyacak yerin kalmazsa oyun biter!
-
-RİSK SİSTEMİ
 İstediğin zaman Risk Kartı seçebilirsin:
 Şanslı Kart: +100 Puan kazandırır.
 Şanssız Kart: -50 Puan siler ve alana 1 engelleyici blok koyar.
 
-KRİTİK NOKTA (5000 PUAN)
 5000 puana ulaştığında risk almak zorundasın!
 Şanslı: +250 Puan.
 Şanssız: -100 Puan ve 2 engelleyici blok.
 
-ENGELLEYİCİ BLOKLAR
-Yok etmek için o bloğun hem SATIRINI hem de SÜTUNUNU aynı anda doldurmalısın!
+
 
 İyi Eğlenceler!`
     },
@@ -49,25 +46,9 @@ Yok etmek için o bloğun hem SATIRINI hem de SÜTUNUNU aynı anda doldurmalıs�
         TUTORIAL_BTN: 'HOW TO PLAY?',
         TUTORIAL_TITLE: 'HOW TO PLAY',
         TUTORIAL_BODY:
-            `Goal: Place the incoming blocks onto the grid.
-Fill rows or columns to clear them and score points.
-
-Watch Out: If you run out of space to place a block, it's Game Over!
-
-RISK SYSTEM
-You can choose a Risk Card anytime:
-Lucky Card: You gain +100 Points.
-Unlucky Card: You lose -50 Points and get 1 obstacle block.
-
-TURNING POINT (5000 POINTS)
-After 5000 points, taking risks becomes mandatory!
-Lucky: +250 Points.
-Unlucky: -100 Points and 2 obstacle blocks.
-
-OBSTACLE BLOCKS
-To destroy them, you must fill BOTH the ROW and COLUMN intersecting the block at the same time!
-
-Have Fun!`
+            `Goal: Place the incoming blocks on the grid. Fill rows or columns to clear them and score points. If you run out of space to place a block, the game is over! To destroy obstacle blocks, you must fill BOTH the ROW and COLUMN of that block at the same time!
+You can choose a Risk Card anytime: Lucky Card: Grants +100 Points. Unlucky Card: Deducts -50 Points and places 1 obstacle block.
+When you reach 5000 points, taking risks becomes mandatory! Lucky: +250 Points. Unlucky: -100 Points and 2 obstacle blocks.
     }
 };
 
