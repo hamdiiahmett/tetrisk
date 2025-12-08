@@ -1,13 +1,27 @@
 // --- Constants & Config ---
-const PALETTES = [
-    // 0: Coffee Latte (Warm & Soft - Default)
+const GRAPHIC_MODES = { STANDARD: 0, PAPER: 1, NEON: 2 };
+
+// Mode 0: Standard (Coffee, Berry, Minty, Sky)
+const STANDARD_PALETTES = [
     { BG: 0xF2E8DC, GRID_EMPTY: 0xE3D5C0, GRID_FILLED: 0xE09F7D, TEXT: '#5D4037', CSS: { bg: '#F2E8DC', dark: '#E3D5C0', light: '#E09F7D', pale: '#5D4037', grad1: '#F2E8DC', grad2: '#EFE0D0' } },
-    // 1: Berry Smoothie (Sweet Pink)
     { BG: 0xfff0f5, GRID_EMPTY: 0xffddee, GRID_FILLED: 0xff66b2, TEXT: '#884466', CSS: { bg: '#fff0f5', dark: '#ffcce6', light: '#ff66b2', pale: '#884466', grad1: '#fff0f5', grad2: '#ffe6f2' } },
-    // 2: Minty Fresh (Pastel Green) - Adjusted Text for Contrast
     { BG: 0xf0fff4, GRID_EMPTY: 0xd9ffe6, GRID_FILLED: 0x00cc66, TEXT: '#006633', CSS: { bg: '#f0fff4', dark: '#d9ffe6', light: '#00cc66', pale: '#006633', grad1: '#f0fff4', grad2: '#e6ffec' } },
-    // 3: Sky Dream (Soft Blue)
     { BG: 0xf0f8ff, GRID_EMPTY: 0xddeeff, GRID_FILLED: 0x33bbff, TEXT: '#004488', CSS: { bg: '#f0f8ff', dark: '#ddeeff', light: '#33bbff', pale: '#004488', grad1: '#f0f8ff', grad2: '#e6f2ff' } }
+];
+
+// Mode 1: Paper (Sketchy, hand-drawn feel)
+// Background vaguely creamy/paper-like. Grid filled changes colors subtly.
+const PAPER_PALETTES = [
+    { BG: 0xfdfbf7, GRID_EMPTY: 0xeae6dc, GRID_FILLED: 0xd65d5d, TEXT: '#333333', CSS: { bg: '#fdfbf7', dark: '#eae6dc', light: '#d65d5d', pale: '#333333', grad1: '#fdfbf7', grad2: '#f0e6d2' } }, // Red/Pencil
+    { BG: 0xfdfbf7, GRID_EMPTY: 0xeae6dc, GRID_FILLED: 0x5d9cd6, TEXT: '#333333', CSS: { bg: '#fdfbf7', dark: '#eae6dc', light: '#5d9cd6', pale: '#333333', grad1: '#fdfbf7', grad2: '#f0e6d2' } }, // Blue/Ink
+    { BG: 0xfdfbf7, GRID_EMPTY: 0xeae6dc, GRID_FILLED: 0x6dad5d, TEXT: '#333333', CSS: { bg: '#fdfbf7', dark: '#eae6dc', light: '#6dad5d', pale: '#333333', grad1: '#fdfbf7', grad2: '#f0e6d2' } }  // Green/Crayon
+];
+
+// Mode 2: Neon (Dark background, glowing outlines)
+const NEON_PALETTES = [
+    { BG: 0x050510, GRID_EMPTY: 0x1a1a33, GRID_FILLED: 0x00ff00, TEXT: '#ffff00', CSS: { bg: '#050510', dark: '#1a1a33', light: '#00ff00', pale: '#ffff00', grad1: '#050510', grad2: '#051005' } }, // Green/Yellow
+    { BG: 0x050510, GRID_EMPTY: 0x1a1a33, GRID_FILLED: 0xff00ff, TEXT: '#00ffff', CSS: { bg: '#050510', dark: '#1a1a33', light: '#ff00ff', pale: '#00ffff', grad1: '#050510', grad2: '#100520' } }, // Magenta/Cyan
+    { BG: 0x050510, GRID_EMPTY: 0x1a1a33, GRID_FILLED: 0x00ffff, TEXT: '#ff00aa', CSS: { bg: '#050510', dark: '#1a1a33', light: '#00ffff', pale: '#ff00aa', grad1: '#050510', grad2: '#050520' } }  // Cyan/Pink
 ];
 
 const TEXTS = {
@@ -15,6 +29,7 @@ const TEXTS = {
         SCORE: 'PUAN', BEST: 'EN İYİ', TIME: 'SÜRE', LOCKED: 'KİLİTLİ',
         PAUSED: 'DURAKLATILDI', SOUND: 'SES', RISK: 'RİSK', ON: 'AÇIK', OFF: 'KAPALI',
         RESTART: 'YENİDEN BAŞLAT', RESUME: 'DEVAM ET', GAME_OVER: 'OYUN BİTTİ',
+        RISK_OFF_MSG: 'RİSK KAPALI',
         PICK_CARD: 'KART SEÇ', SKIP: 'KAPAT',
         LUCKY: 'ŞANSLI', UNLUCKY: 'ŞANSSIZ',
         TUTORIAL_BTN: 'NASIL OYNANIR?',
@@ -41,6 +56,7 @@ Engelleyici bloklari yok etmek için o bloğun hem SATIRINI hem de SÜTUNUNU ayn
         SCORE: 'SCORE', BEST: 'BEST', TIME: 'TIME', LOCKED: 'LOCKED',
         PAUSED: 'PAUSED', SOUND: 'SOUND', RISK: 'RISK', ON: 'ON', OFF: 'OFF',
         RESTART: 'RESTART GAME', RESUME: 'RESUME', GAME_OVER: 'GAME OVER',
+        RISK_OFF_MSG: 'RISK OFF',
         PICK_CARD: 'PICK A CARD', SKIP: 'CLOSE',
         LUCKY: 'LUCKY', UNLUCKY: 'UNLUCKY',
         TUTORIAL_BTN: 'HOW TO PLAY?',
@@ -53,8 +69,17 @@ When you reach 5000 points, taking risks becomes mandatory! Lucky: +250 Points. 
 };
 
 
+let currentMode = GRAPHIC_MODES.STANDARD;
 let currentPaletteIndex = 0;
-function getTheme() { return PALETTES[currentPaletteIndex]; }
+
+function getTheme() {
+    let list;
+    if (currentMode === GRAPHIC_MODES.PAPER) list = PAPER_PALETTES;
+    else if (currentMode === GRAPHIC_MODES.NEON) list = NEON_PALETTES;
+    else list = STANDARD_PALETTES;
+
+    return list[currentPaletteIndex % list.length];
+}
 
 const GRID_SIZE = 10;
 const BLOCK_SIZE = 40;
@@ -117,7 +142,8 @@ let gameState = {
     riskEnabled: true,
     isPaused: false,
     frozenBlock: null,
-    lang: 'tr' // Default Language: Turkish
+    lang: 'tr', // Default Language: Turkish
+    cardsDrawn: 0
 };
 
 class GameScene extends Phaser.Scene {
@@ -147,7 +173,7 @@ class GameScene extends Phaser.Scene {
         this.secondsLeft = 60;
 
         // Initial Theme Application
-        this.applyTheme(currentPaletteIndex);
+        this.applyTheme();
     }
 
     getText(key) { return TEXTS[gameState.lang][key]; }
@@ -159,33 +185,105 @@ class GameScene extends Phaser.Scene {
         // Block
         if (this.textures.exists('block_filled')) this.textures.remove('block_filled');
         graphics.clear();
-        graphics.fillStyle(theme.GRID_FILLED, 1);
-        graphics.fillRect(0, 0, BLOCK_SIZE, BLOCK_SIZE);
-        graphics.lineStyle(2, 0x000000, 0.3);
-        graphics.strokeRect(2, 2, BLOCK_SIZE - 4, BLOCK_SIZE - 4);
+
+        if (currentMode === GRAPHIC_MODES.PAPER) {
+            // Paper Style: Hand-drawn look, slight irregularity
+            graphics.fillStyle(theme.GRID_FILLED, 0.9);
+            graphics.fillRect(2, 2, BLOCK_SIZE - 4, BLOCK_SIZE - 4);
+            graphics.lineStyle(2, 0x000000, 0.8);
+            graphics.strokeRect(2, 2, BLOCK_SIZE - 4, BLOCK_SIZE - 4);
+            // Inner scribble
+            graphics.lineStyle(1, 0x000000, 0.3);
+            graphics.moveTo(5, 5); graphics.lineTo(BLOCK_SIZE - 5, BLOCK_SIZE - 5);
+            graphics.strokePath();
+
+        } else if (currentMode === GRAPHIC_MODES.NEON) {
+            // Neon Style: Glowy outline, empty center or dark center
+            graphics.fillStyle(0x000000, 0); // Transparent center
+            graphics.fillRect(0, 0, BLOCK_SIZE, BLOCK_SIZE);
+
+            // Outer Glow (simulated with multiple strokes)
+            graphics.lineStyle(4, theme.GRID_FILLED, 0.3);
+            graphics.strokeRect(2, 2, BLOCK_SIZE - 4, BLOCK_SIZE - 4);
+            graphics.lineStyle(2, theme.GRID_FILLED, 1);
+            graphics.strokeRect(2, 2, BLOCK_SIZE - 4, BLOCK_SIZE - 4);
+
+        } else {
+            // Standard Style
+            graphics.fillStyle(theme.GRID_FILLED, 1);
+            graphics.fillRect(0, 0, BLOCK_SIZE, BLOCK_SIZE);
+            graphics.lineStyle(2, 0x000000, 0.3);
+            graphics.strokeRect(2, 2, BLOCK_SIZE - 4, BLOCK_SIZE - 4);
+        }
         graphics.generateTexture('block_filled', BLOCK_SIZE, BLOCK_SIZE);
 
         // Empty
         if (this.textures.exists('block_empty')) this.textures.remove('block_empty');
         graphics.clear();
-        graphics.fillStyle(theme.GRID_EMPTY, 1);
-        graphics.fillRect(0, 0, BLOCK_SIZE, BLOCK_SIZE);
-        graphics.lineStyle(2, theme.GRID_FILLED, 0.2);
-        graphics.strokeRect(0, 0, BLOCK_SIZE, BLOCK_SIZE);
+
+        if (currentMode === GRAPHIC_MODES.PAPER) {
+            // Paper: Faint pencil grid
+            graphics.fillStyle(theme.GRID_EMPTY, 0.5);
+            graphics.fillRect(0, 0, BLOCK_SIZE, BLOCK_SIZE);
+            graphics.lineStyle(1, 0x555555, 0.3);
+            graphics.strokeRect(0, 0, BLOCK_SIZE, BLOCK_SIZE);
+
+        } else if (currentMode === GRAPHIC_MODES.NEON) {
+            // Neon: Faint grid lines
+            graphics.fillStyle(theme.GRID_EMPTY, 1);
+            graphics.fillRect(0, 0, BLOCK_SIZE, BLOCK_SIZE);
+            graphics.lineStyle(1, theme.GRID_FILLED, 0.2);
+            graphics.strokeRect(0, 0, BLOCK_SIZE, BLOCK_SIZE);
+        } else {
+            // Standard
+            graphics.fillStyle(theme.GRID_EMPTY, 1);
+            graphics.fillRect(0, 0, BLOCK_SIZE, BLOCK_SIZE);
+            graphics.lineStyle(2, theme.GRID_FILLED, 0.2);
+            graphics.strokeRect(0, 0, BLOCK_SIZE, BLOCK_SIZE);
+        }
         graphics.generateTexture('block_empty', BLOCK_SIZE, BLOCK_SIZE);
 
         // Frozen
         if (this.textures.exists('block_frozen')) this.textures.remove('block_frozen');
         graphics.clear();
-        graphics.fillStyle(0x888888, 1); // Neutral gray
-        graphics.fillRect(0, 0, BLOCK_SIZE, BLOCK_SIZE);
-        graphics.lineStyle(4, 0x333333, 1);
-        graphics.strokeRect(2, 2, BLOCK_SIZE - 4, BLOCK_SIZE - 4);
-        graphics.lineStyle(3, 0x000000, 0.5);
-        graphics.beginPath();
-        graphics.moveTo(5, 5); graphics.lineTo(BLOCK_SIZE - 5, BLOCK_SIZE - 5);
-        graphics.moveTo(BLOCK_SIZE - 5, 5); graphics.lineTo(5, BLOCK_SIZE - 5);
-        graphics.strokePath();
+
+        if (currentMode === GRAPHIC_MODES.PAPER) {
+            // Paper Frozen: Scribbled gray
+            graphics.fillStyle(0x888888, 0.8);
+            graphics.fillRect(2, 2, BLOCK_SIZE - 4, BLOCK_SIZE - 4);
+            graphics.lineStyle(3, 0x222222, 0.8);
+            graphics.strokeRect(2, 2, BLOCK_SIZE - 4, BLOCK_SIZE - 4);
+            graphics.beginPath();
+            graphics.moveTo(5, 5); graphics.lineTo(BLOCK_SIZE - 5, BLOCK_SIZE - 5);
+            graphics.moveTo(BLOCK_SIZE - 5, 5); graphics.lineTo(5, BLOCK_SIZE - 5);
+            graphics.strokePath();
+
+        } else if (currentMode === GRAPHIC_MODES.NEON) {
+            // Neon Frozen: Dark with glowing X
+            graphics.fillStyle(0x222222, 0.9);
+            graphics.fillRect(2, 2, BLOCK_SIZE - 4, BLOCK_SIZE - 4);
+            graphics.lineStyle(2, 0xffffff, 1); // White Glow X
+            graphics.strokeRect(2, 2, BLOCK_SIZE - 4, BLOCK_SIZE - 4);
+            graphics.beginPath();
+            graphics.moveTo(5, 5); graphics.lineTo(BLOCK_SIZE - 5, BLOCK_SIZE - 5);
+            graphics.moveTo(BLOCK_SIZE - 5, 5); graphics.lineTo(5, BLOCK_SIZE - 5);
+            graphics.strokePath();
+            // Outer glow for frozen
+            graphics.lineStyle(2, 0xffffff, 0.3);
+            graphics.strokeRect(0, 0, BLOCK_SIZE, BLOCK_SIZE);
+
+        } else {
+            // Standard Frozen
+            graphics.fillStyle(0x888888, 1); // Neutral gray
+            graphics.fillRect(0, 0, BLOCK_SIZE, BLOCK_SIZE);
+            graphics.lineStyle(4, 0x333333, 1);
+            graphics.strokeRect(2, 2, BLOCK_SIZE - 4, BLOCK_SIZE - 4);
+            graphics.lineStyle(3, 0x000000, 0.5);
+            graphics.beginPath();
+            graphics.moveTo(5, 5); graphics.lineTo(BLOCK_SIZE - 5, BLOCK_SIZE - 5);
+            graphics.moveTo(BLOCK_SIZE - 5, 5); graphics.lineTo(5, BLOCK_SIZE - 5);
+            graphics.strokePath();
+        }
         graphics.generateTexture('block_frozen', BLOCK_SIZE, BLOCK_SIZE);
 
         // Card Back
@@ -204,6 +302,11 @@ class GameScene extends Phaser.Scene {
     onTimerTick() {
         if (gameState.gameOver || gameState.isPaused) return;
 
+        if (!gameState.riskEnabled) {
+            this.riskText.setText(this.getText('RISK_OFF_MSG'));
+            return;
+        }
+
         if (gameState.frozenBlock) {
             this.riskText.setText(this.getText('LOCKED'));
             return;
@@ -220,12 +323,13 @@ class GameScene extends Phaser.Scene {
     }
 
     rotateTheme() {
-        currentPaletteIndex = (currentPaletteIndex + 1) % PALETTES.length;
-        this.applyTheme(currentPaletteIndex);
+        // Rotate within the current mode's palettes
+        currentPaletteIndex++;
+        this.applyTheme();
     }
 
-    applyTheme(index) {
-        const theme = PALETTES[index];
+    applyTheme() {
+        const theme = getTheme();
         // CSS Vars
         document.documentElement.style.setProperty('--bg-grad-1', theme.CSS.grad1);
         document.documentElement.style.setProperty('--bg-grad-2', theme.CSS.grad2);
@@ -245,7 +349,11 @@ class GameScene extends Phaser.Scene {
         // Update Text Logic (in case lang changed or just refresh)
         this.scoreText.setText(`${this.getText('SCORE')}: ${gameState.score}`);
         this.bestText.setText(`${this.getText('BEST')}: ${gameState.bestScore}`);
-        this.riskText.setText(`${this.getText('TIME')}: ${this.secondsLeft}s`);
+        if (gameState.riskEnabled) {
+            this.riskText.setText(`${this.getText('TIME')}: ${this.secondsLeft}s`);
+        } else {
+            this.riskText.setText(this.getText('RISK_OFF_MSG'));
+        }
 
         this.generateTextures();
         this.refreshGridVisuals();
@@ -294,6 +402,36 @@ class GameScene extends Phaser.Scene {
 
         // Init text
         this.updateScore(0);
+        this.createModeButtons();
+    }
+
+    createModeButtons() {
+        const x = 30;
+        const y = 60;
+        const gap = 35;
+
+        // Mode 1: Standard
+        let btn1 = this.add.text(x, y, '1', { fontFamily: '"Press Start 2P"', fontSize: '12px', color: '#ffffff', backgroundColor: '#555555', padding: { x: 5, y: 5 } })
+            .setInteractive({ useHandCursor: true })
+            .on('pointerdown', () => this.setGraphicMode(GRAPHIC_MODES.STANDARD));
+
+        // Mode 2: Paper
+        let btn2 = this.add.text(x + gap, y, '2', { fontFamily: '"Press Start 2P"', fontSize: '12px', color: '#000000', backgroundColor: '#fdfbf7', padding: { x: 5, y: 5 } })
+            .setInteractive({ useHandCursor: true })
+            .on('pointerdown', () => this.setGraphicMode(GRAPHIC_MODES.PAPER));
+
+        // Mode 3: Neon
+        let btn3 = this.add.text(x + gap * 2, y, '3', { fontFamily: '"Press Start 2P"', fontSize: '12px', color: '#00ffff', backgroundColor: '#000000', padding: { x: 5, y: 5 } })
+            .setInteractive({ useHandCursor: true })
+            .on('pointerdown', () => this.setGraphicMode(GRAPHIC_MODES.NEON));
+    }
+
+    setGraphicMode(mode) {
+        if (currentMode === mode) return;
+        currentMode = mode;
+        currentPaletteIndex = 0; // Reset index on switch logic
+        SOUNDS.BUTTON();
+        this.applyTheme();
     }
 
     triggerCardRisk() {
@@ -342,7 +480,18 @@ class GameScene extends Phaser.Scene {
 
     revealCard(cardContainer, parent, highStakes) {
         SOUNDS.CARD_FLIP();
-        const isLucky = Math.random() < 0.5;
+
+        // Dynamic Probability
+        gameState.cardsDrawn++;
+        let count = gameState.cardsDrawn;
+        let unluckyChance = 0.40; // Default 1-3
+        if (count >= 4 && count <= 5) unluckyChance = 0.45;
+        else if (count >= 6 && count <= 7) unluckyChance = 0.50;
+        else if (count >= 8) unluckyChance = 0.60;
+
+        const isLucky = Math.random() >= unluckyChance; // if random(0-1) is >= 0.4, then 60% chance it is lucky. Wait, user said "unlucky chance"
+        // User said: unlucky chance 40%. So isLucky = random > 0.40 (60% lucky)
+
         const theme = getTheme();
 
         let valWin = highStakes ? 250 : 100;
@@ -576,7 +725,24 @@ class GameScene extends Phaser.Scene {
     }
 
     updateScore(points) {
-        gameState.score += points;
+        // Calculate Multiplier based on Risk Probability
+        let multiplier = 1;
+        if (gameState.riskEnabled) {
+            let count = gameState.cardsDrawn;
+            let riskChance = 0.40;
+            if (count >= 4 && count <= 5) riskChance = 0.45;
+            else if (count >= 6 && count <= 7) riskChance = 0.50;
+            else if (count >= 8) riskChance = 0.60;
+
+            // Mapping: 0.4 -> 1x, 0.6 -> 1.6x. (Linear: M = 1 + (R-0.4)*3)
+            // 0.4 -> 1
+            // 0.5 -> 1.3
+            // 0.6 -> 1.6
+            // 0.7 -> 1.9 (approx 2)
+            multiplier = 1 + (riskChance - 0.40) * 3;
+        }
+
+        gameState.score += Math.floor(points * multiplier);
         this.scoreText.setText(`${this.getText('SCORE')}: ${gameState.score}`);
         if (gameState.score > gameState.bestScore) {
             gameState.bestScore = gameState.score;
@@ -618,6 +784,7 @@ class GameScene extends Phaser.Scene {
         gameState.isPaused = false;
         gameState.grid = Array(GRID_SIZE).fill().map(() => Array(GRID_SIZE).fill(0));
         gameState.frozenBlock = null;
+        gameState.cardsDrawn = 0;
         SOUNDS.BUTTON();
     }
 
@@ -643,7 +810,13 @@ class GameScene extends Phaser.Scene {
         btnSound.on('pointerdown', () => { soundEnabled = !soundEnabled; btnSound.setText(`${this.getText('SOUND')}: ${soundEnabled ? this.getText('ON') : this.getText('OFF')}`); SOUNDS.BUTTON(); });
 
         let btnRisk = this.add.text(w / 2, h / 2 - 70, `${this.getText('RISK')}: ${gameState.riskEnabled ? this.getText('ON') : this.getText('OFF')}`, { fontFamily: '"Press Start 2P"', fontSize: '18px', color: theme.TEXT }).setOrigin(0.5).setInteractive();
-        btnRisk.on('pointerdown', () => { gameState.riskEnabled = !gameState.riskEnabled; btnRisk.setText(`${this.getText('RISK')}: ${gameState.riskEnabled ? this.getText('ON') : this.getText('OFF')}`); SOUNDS.BUTTON(); });
+        btnRisk.on('pointerdown', () => {
+            gameState.riskEnabled = !gameState.riskEnabled;
+            btnRisk.setText(`${this.getText('RISK')}: ${gameState.riskEnabled ? this.getText('ON') : this.getText('OFF')}`);
+            if (!gameState.riskEnabled) this.riskText.setText(this.getText('RISK_OFF_MSG'));
+            else this.riskText.setText(`${this.getText('TIME')}: ${this.secondsLeft}s`);
+            SOUNDS.BUTTON();
+        });
 
         // Lang
         const getLangLabel = () => gameState.lang === 'tr' ? 'DİL' : 'LANG';
@@ -653,12 +826,6 @@ class GameScene extends Phaser.Scene {
             btnLang.setText(`${getLangLabel()}: ${gameState.lang.toUpperCase()}`);
             SOUNDS.BUTTON();
             // Dynamic text refresh
-            title.setText(this.getText('PAUSED'));
-            btnSound.setText(`${this.getText('SOUND')}: ${soundEnabled ? this.getText('ON') : this.getText('OFF')}`);
-            btnRisk.setText(`${this.getText('RISK')}: ${gameState.riskEnabled ? this.getText('ON') : this.getText('OFF')}`);
-            btnTutorial.setText(this.getText('TUTORIAL_BTN'));
-            btnRestart.setText(`> ${this.getText('RESTART')}`);
-            btnResume.setText(`> ${this.getText('RESUME')}`);
             this.scoreText.setText(`${this.getText('SCORE')}: ${gameState.score}`);
             this.bestText.setText(`${this.getText('BEST')}: ${gameState.bestScore}`);
         });
