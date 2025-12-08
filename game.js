@@ -1,7 +1,7 @@
 // --- Constants & Config ---
 const PALETTES = [
-    // 0: Peachy Cream (Warm Pastel - Default)
-    { BG: 0xfff8f0, GRID_EMPTY: 0xffeebb, GRID_FILLED: 0xffaa44, TEXT: '#8b4513', CSS: { bg: '#fff8f0', dark: '#ffeebb', light: '#ffaa44', pale: '#8b4513', grad1: '#fff8f0', grad2: '#fff2e6' } },
+    // 0: Coffee Latte (Warm & Soft - Default)
+    { BG: 0xF2E8DC, GRID_EMPTY: 0xE3D5C0, GRID_FILLED: 0xE09F7D, TEXT: '#5D4037', CSS: { bg: '#F2E8DC', dark: '#E3D5C0', light: '#E09F7D', pale: '#5D4037', grad1: '#F2E8DC', grad2: '#EFE0D0' } },
     // 1: Berry Smoothie (Sweet Pink)
     { BG: 0xfff0f5, GRID_EMPTY: 0xffddee, GRID_FILLED: 0xff66b2, TEXT: '#884466', CSS: { bg: '#fff0f5', dark: '#ffcce6', light: '#ff66b2', pale: '#884466', grad1: '#fff0f5', grad2: '#ffe6f2' } },
     // 2: Minty Fresh (Pastel Green) - Adjusted Text for Contrast
@@ -22,21 +22,18 @@ const TEXTS = {
         TUTORIAL_BODY:
             `Amaç: Gelen blokları alana yerleştir.
 Satır veya sütunları doldurarak patlat ve puan topla.
+Blokları koyacak yerin kalmazsa oyun biter!
+Engelleyici bloklari yok etmek için o bloğun hem SATIRINI hem de SÜTUNUNU aynı anda doldurmalısın!
 
-Dikkat: Blokları koyacak yerin kalmazsa oyun biter!
-
-RİSK SİSTEMİ
 İstediğin zaman Risk Kartı seçebilirsin:
 Şanslı Kart: +100 Puan kazandırır.
 Şanssız Kart: -50 Puan siler ve alana 1 engelleyici blok koyar.
 
-KRİTİK NOKTA (5000 PUAN)
 5000 puana ulaştığında risk almak zorundasın!
 Şanslı: +250 Puan.
 Şanssız: -100 Puan ve 2 engelleyici blok.
 
-ENGELLEYİCİ BLOKLAR
-Yok etmek için o bloğun hem SATIRINI hem de SÜTUNUNU aynı anda doldurmalısın!
+
 
 İyi Eğlenceler!`
     },
@@ -49,25 +46,9 @@ Yok etmek için o bloğun hem SATIRINI hem de SÜTUNUNU aynı anda doldurmalıs�
         TUTORIAL_BTN: 'HOW TO PLAY?',
         TUTORIAL_TITLE: 'HOW TO PLAY',
         TUTORIAL_BODY:
-            `Goal: Place the incoming blocks onto the grid.
-Fill rows or columns to clear them and score points.
-
-Watch Out: If you run out of space to place a block, it's Game Over!
-
-RISK SYSTEM
-You can choose a Risk Card anytime:
-Lucky Card: You gain +100 Points.
-Unlucky Card: You lose -50 Points and get 1 obstacle block.
-
-TURNING POINT (5000 POINTS)
-After 5000 points, taking risks becomes mandatory!
-Lucky: +250 Points.
-Unlucky: -100 Points and 2 obstacle blocks.
-
-OBSTACLE BLOCKS
-To destroy them, you must fill BOTH the ROW and COLUMN intersecting the block at the same time!
-
-Have Fun!`
+            `Goal: Place the incoming blocks on the grid. Fill rows or columns to clear them and score points. If you run out of space to place a block, the game is over! To destroy obstacle blocks, you must fill BOTH the ROW and COLUMN of that block at the same time!
+You can choose a Risk Card anytime: Lucky Card: Grants +100 Points. Unlucky Card: Deducts -50 Points and places 1 obstacle block.
+When you reach 5000 points, taking risks becomes mandatory! Lucky: +250 Points. Unlucky: -100 Points and 2 obstacle blocks.`
     }
 };
 
@@ -625,7 +606,7 @@ class GameScene extends Phaser.Scene {
         let txt = this.add.text(w / 2, h / 2 - 50, this.getText('GAME_OVER'), { fontFamily: '"Press Start 2P"', fontSize: '40px', color: '#ff0000' }).setOrigin(0.5);
         let scoreTxt = this.add.text(w / 2, h / 2 + 20, `${this.getText('SCORE')}: ${gameState.score}`, { fontFamily: '"Press Start 2P"', fontSize: '20px', color: getTheme().TEXT }).setOrigin(0.5);
         let btn = this.add.text(w / 2, h / 2 + 100, '> ' + this.getText('RESTART') + ' <', { fontFamily: '"Press Start 2P"', fontSize: '20px', color: getTheme().TEXT }).setOrigin(0.5).setInteractive({ useHandCursor: true });
-        this.tweens.add({ targets: btn, alpha: 0.5, duration: 500, yoyo: true, repeat: -1 });
+        this.tweens.add({ targets: btn, scaleX: 1.1, scaleY: 1.1, duration: 800, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
         btn.on('pointerdown', () => this.restartGame());
     }
 
