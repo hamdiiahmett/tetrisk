@@ -1,7 +1,5 @@
-// --- Constants & Config ---
 const GRAPHIC_MODES = { STANDARD: 0, PAPER: 1, NEON: 2 };
 
-// Mode 0: Standard (Coffee, Berry, Minty, Sky)
 const STANDARD_PALETTES = [
     { BG: 0xF2E8DC, GRID_EMPTY: 0xE3D5C0, GRID_FILLED: 0xE09F7D, TEXT: '#5D4037', CSS: { bg: '#F2E8DC', dark: '#E3D5C0', light: '#E09F7D', pale: '#5D4037', grad1: '#F2E8DC', grad2: '#EFE0D0' } },
     { BG: 0xfff0f5, GRID_EMPTY: 0xffddee, GRID_FILLED: 0xff66b2, TEXT: '#884466', CSS: { bg: '#fff0f5', dark: '#ffcce6', light: '#ff66b2', pale: '#884466', grad1: '#fff0f5', grad2: '#ffe6f2' } },
@@ -9,15 +7,12 @@ const STANDARD_PALETTES = [
     { BG: 0xf0f8ff, GRID_EMPTY: 0xddeeff, GRID_FILLED: 0x33bbff, TEXT: '#004488', CSS: { bg: '#f0f8ff', dark: '#ddeeff', light: '#33bbff', pale: '#004488', grad1: '#f0f8ff', grad2: '#e6f2ff' } }
 ];
 
-// Mode 1: Paper (Sketchy, hand-drawn feel)
-// Background vaguely creamy/paper-like. Grid filled changes colors subtly.
 const PAPER_PALETTES = [
     { BG: 0xfdfbf7, GRID_EMPTY: 0xeae6dc, GRID_FILLED: 0xd65d5d, TEXT: '#333333', CSS: { bg: '#fdfbf7', dark: '#eae6dc', light: '#d65d5d', pale: '#333333', grad1: '#fdfbf7', grad2: '#f0e6d2' } }, // Red/Pencil
     { BG: 0xfdfbf7, GRID_EMPTY: 0xeae6dc, GRID_FILLED: 0x5d9cd6, TEXT: '#333333', CSS: { bg: '#fdfbf7', dark: '#eae6dc', light: '#5d9cd6', pale: '#333333', grad1: '#fdfbf7', grad2: '#f0e6d2' } }, // Blue/Ink
     { BG: 0xfdfbf7, GRID_EMPTY: 0xeae6dc, GRID_FILLED: 0x6dad5d, TEXT: '#333333', CSS: { bg: '#fdfbf7', dark: '#eae6dc', light: '#6dad5d', pale: '#333333', grad1: '#fdfbf7', grad2: '#f0e6d2' } }  // Green/Crayon
 ];
 
-// Mode 2: Neon (Dark background, glowing outlines)
 const NEON_PALETTES = [
     { BG: 0x050510, GRID_EMPTY: 0x1a1a33, GRID_FILLED: 0x00ff00, TEXT: '#ffff00', CSS: { bg: '#050510', dark: '#1a1a33', light: '#00ff00', pale: '#ffff00', grad1: '#050510', grad2: '#051005' } }, // Green/Yellow
     { BG: 0x050510, GRID_EMPTY: 0x1a1a33, GRID_FILLED: 0xff00ff, TEXT: '#00ffff', CSS: { bg: '#050510', dark: '#1a1a33', light: '#ff00ff', pale: '#00ffff', grad1: '#050510', grad2: '#100520' } }, // Magenta/Cyan
@@ -725,7 +720,6 @@ class GameScene extends Phaser.Scene {
     }
 
     updateScore(points) {
-        // Calculate Multiplier based on Risk Probability
         let multiplier = 1;
         if (gameState.riskEnabled) {
             let count = gameState.cardsDrawn;
