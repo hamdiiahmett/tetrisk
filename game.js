@@ -1,30 +1,28 @@
-const GRAPHIC_MODES = { STANDARD: 0, PAPER: 1, NEON: 2 };
+const GRAPHIC_MODES = { FABRIC: 0, PAPER: 1 };
 
-const STANDARD_PALETTES = [
-    { BG: 0xF2E8DC, GRID_EMPTY: 0xE3D5C0, GRID_FILLED: 0xE09F7D, TEXT: '#5D4037', CSS: { bg: '#F2E8DC', dark: '#E3D5C0', light: '#E09F7D', pale: '#5D4037', grad1: '#F2E8DC', grad2: '#EFE0D0' } },
-    { BG: 0xfff0f5, GRID_EMPTY: 0xffddee, GRID_FILLED: 0xff66b2, TEXT: '#884466', CSS: { bg: '#fff0f5', dark: '#ffcce6', light: '#ff66b2', pale: '#884466', grad1: '#fff0f5', grad2: '#ffe6f2' } },
-    { BG: 0xf0fff4, GRID_EMPTY: 0xd9ffe6, GRID_FILLED: 0x00cc66, TEXT: '#006633', CSS: { bg: '#f0fff4', dark: '#d9ffe6', light: '#00cc66', pale: '#006633', grad1: '#f0fff4', grad2: '#e6ffec' } },
-    { BG: 0xf0f8ff, GRID_EMPTY: 0xddeeff, GRID_FILLED: 0x33bbff, TEXT: '#004488', CSS: { bg: '#f0f8ff', dark: '#ddeeff', light: '#33bbff', pale: '#004488', grad1: '#f0f8ff', grad2: '#e6f2ff' } }
+// Mode 0: Fabric (Stitched, Cozy, Plushie feel)
+const FABRIC_PALETTES = [
+    // Green/Brown (Nature Fabric)
+    { BG: 0x4A6B46, GRID_EMPTY: 0x3d5a3a, GRID_FILLED: 0xB58E68, TEXT: '#F2E8DC', STITCH: 0xE8DCCA, CSS: { bg: '#4A6B46', dark: '#3d5a3a', light: '#B58E68', pale: '#F2E8DC', grad1: '#4A6B46', grad2: '#3A5236' } },
+    // Soft Pink/Cream (Sweet Fabric)
+    { BG: 0xDBC1AD, GRID_EMPTY: 0xC9B09C, GRID_FILLED: 0xD46C6C, TEXT: '#5D4037', STITCH: 0xFFFFFF, CSS: { bg: '#DBC1AD', dark: '#C9B09C', light: '#D46C6C', pale: '#5D4037', grad1: '#F5E6DA', grad2: '#DBC1AD' } },
+    // Blue/Denim (Cool Fabric)
+    { BG: 0x5B7C99, GRID_EMPTY: 0x4A6882, GRID_FILLED: 0xE0D68A, TEXT: '#FFFFFF', STITCH: 0xCCCCCC, CSS: { bg: '#5B7C99', dark: '#4A6882', light: '#E0D68A', pale: '#FFFFFF', grad1: '#5B7C99', grad2: '#4B6680' } }
 ];
 
+// Mode 1: Paper (Sketchy, hand-drawn feel)
 const PAPER_PALETTES = [
     { BG: 0xfdfbf7, GRID_EMPTY: 0xeae6dc, GRID_FILLED: 0xd65d5d, TEXT: '#333333', CSS: { bg: '#fdfbf7', dark: '#eae6dc', light: '#d65d5d', pale: '#333333', grad1: '#fdfbf7', grad2: '#f0e6d2' } }, // Red/Pencil
     { BG: 0xfdfbf7, GRID_EMPTY: 0xeae6dc, GRID_FILLED: 0x5d9cd6, TEXT: '#333333', CSS: { bg: '#fdfbf7', dark: '#eae6dc', light: '#5d9cd6', pale: '#333333', grad1: '#fdfbf7', grad2: '#f0e6d2' } }, // Blue/Ink
     { BG: 0xfdfbf7, GRID_EMPTY: 0xeae6dc, GRID_FILLED: 0x6dad5d, TEXT: '#333333', CSS: { bg: '#fdfbf7', dark: '#eae6dc', light: '#6dad5d', pale: '#333333', grad1: '#fdfbf7', grad2: '#f0e6d2' } }  // Green/Crayon
 ];
 
-const NEON_PALETTES = [
-    { BG: 0x050510, GRID_EMPTY: 0x1a1a33, GRID_FILLED: 0x00ff00, TEXT: '#ffff00', CSS: { bg: '#050510', dark: '#1a1a33', light: '#00ff00', pale: '#ffff00', grad1: '#050510', grad2: '#051005' } }, // Green/Yellow
-    { BG: 0x050510, GRID_EMPTY: 0x1a1a33, GRID_FILLED: 0xff00ff, TEXT: '#00ffff', CSS: { bg: '#050510', dark: '#1a1a33', light: '#ff00ff', pale: '#00ffff', grad1: '#050510', grad2: '#100520' } }, // Magenta/Cyan
-    { BG: 0x050510, GRID_EMPTY: 0x1a1a33, GRID_FILLED: 0x00ffff, TEXT: '#ff00aa', CSS: { bg: '#050510', dark: '#1a1a33', light: '#00ffff', pale: '#ff00aa', grad1: '#050510', grad2: '#050520' } }  // Cyan/Pink
-];
-
 const TEXTS = {
     tr: {
-        SCORE: 'PUAN', BEST: 'EN İYİ', TIME: 'SÜRE', LOCKED: 'KİLİTLİ',
-        PAUSED: 'DURAKLATILDI', SOUND: 'SES', RISK: 'RİSK', ON: 'AÇIK', OFF: 'KAPALI',
-        RESTART: 'YENİDEN BAŞLAT', RESUME: 'DEVAM ET', GAME_OVER: 'OYUN BİTTİ',
-        RISK_OFF_MSG: 'RİSK KAPALI',
+        SCORE: 'PUAN', BEST: 'EN IYI', TIME: 'SURE', LOCKED: 'KILITLI',
+        PAUSED: 'DURAKLATILDI', SOUND: 'SES', RISK: 'RISK', ON: 'ACIK', OFF: 'KAPALI',
+        RESTART: 'YENIDEN BASLAT', RESUME: 'DEVAM ET', GAME_OVER: 'OYUN BITTI',
+        RISK_OFF_MSG: 'RISK KAPALI',
         PICK_CARD: 'KART SEÇ', SKIP: 'KAPAT',
         LUCKY: 'ŞANSLI', UNLUCKY: 'ŞANSSIZ',
         TUTORIAL_BTN: 'NASIL OYNANIR?',
@@ -64,14 +62,16 @@ When you reach 5000 points, taking risks becomes mandatory! Lucky: +250 Points. 
 };
 
 
-let currentMode = GRAPHIC_MODES.STANDARD;
+let currentMode = GRAPHIC_MODES.FABRIC;
 let currentPaletteIndex = 0;
 
 function getTheme() {
     let list;
     if (currentMode === GRAPHIC_MODES.PAPER) list = PAPER_PALETTES;
-    else if (currentMode === GRAPHIC_MODES.NEON) list = NEON_PALETTES;
-    else list = STANDARD_PALETTES;
+    else list = FABRIC_PALETTES;
+
+    // Safety fallback
+    if (!list || list.length === 0) list = FABRIC_PALETTES;
 
     return list[currentPaletteIndex % list.length];
 }
@@ -187,28 +187,36 @@ class GameScene extends Phaser.Scene {
             graphics.fillRect(2, 2, BLOCK_SIZE - 4, BLOCK_SIZE - 4);
             graphics.lineStyle(2, 0x000000, 0.8);
             graphics.strokeRect(2, 2, BLOCK_SIZE - 4, BLOCK_SIZE - 4);
-            // Inner scribble
             graphics.lineStyle(1, 0x000000, 0.3);
             graphics.moveTo(5, 5); graphics.lineTo(BLOCK_SIZE - 5, BLOCK_SIZE - 5);
             graphics.strokePath();
 
-        } else if (currentMode === GRAPHIC_MODES.NEON) {
-            // Neon Style: Glowy outline, empty center or dark center
-            graphics.fillStyle(0x000000, 0); // Transparent center
-            graphics.fillRect(0, 0, BLOCK_SIZE, BLOCK_SIZE);
-
-            // Outer Glow (simulated with multiple strokes)
-            graphics.lineStyle(4, theme.GRID_FILLED, 0.3);
-            graphics.strokeRect(2, 2, BLOCK_SIZE - 4, BLOCK_SIZE - 4);
-            graphics.lineStyle(2, theme.GRID_FILLED, 1);
-            graphics.strokeRect(2, 2, BLOCK_SIZE - 4, BLOCK_SIZE - 4);
-
         } else {
-            // Standard Style
+            // Fabric Style (Mode 0)
+            const stitchColor = theme.STITCH || 0xFFFFFF;
+
+            // Base Cloth
             graphics.fillStyle(theme.GRID_FILLED, 1);
-            graphics.fillRect(0, 0, BLOCK_SIZE, BLOCK_SIZE);
-            graphics.lineStyle(2, 0x000000, 0.3);
-            graphics.strokeRect(2, 2, BLOCK_SIZE - 4, BLOCK_SIZE - 4);
+            graphics.fillRoundedRect(1, 1, BLOCK_SIZE - 2, BLOCK_SIZE - 2, 8);
+
+            // Stitches
+            graphics.lineStyle(2, stitchColor, 0.8);
+            // Manually draw dashed rounded rect
+            const dash = 4, gap = 4;
+            // Top
+            for (let i = 8; i < BLOCK_SIZE - 8; i += dash + gap) { graphics.moveTo(i, 6); graphics.lineTo(Math.min(i + dash, BLOCK_SIZE - 8), 6); }
+            // Bottom
+            for (let i = 8; i < BLOCK_SIZE - 8; i += dash + gap) { graphics.moveTo(i, BLOCK_SIZE - 6); graphics.lineTo(Math.min(i + dash, BLOCK_SIZE - 8), BLOCK_SIZE - 6); }
+            // Left
+            for (let i = 8; i < BLOCK_SIZE - 8; i += dash + gap) { graphics.moveTo(6, i); graphics.lineTo(6, Math.min(i + dash, BLOCK_SIZE - 8)); }
+            // Right
+            for (let i = 8; i < BLOCK_SIZE - 8; i += dash + gap) { graphics.moveTo(BLOCK_SIZE - 6, i); graphics.lineTo(BLOCK_SIZE - 6, Math.min(i + dash, BLOCK_SIZE - 8)); }
+            graphics.strokePath();
+
+            // Button Details (Randomly placed? No, static for texture)
+            graphics.fillStyle(stitchColor, 0.5);
+            graphics.fillCircle(10, 10, 2);
+            graphics.fillCircle(BLOCK_SIZE - 10, BLOCK_SIZE - 10, 2);
         }
         graphics.generateTexture('block_filled', BLOCK_SIZE, BLOCK_SIZE);
 
@@ -217,24 +225,18 @@ class GameScene extends Phaser.Scene {
         graphics.clear();
 
         if (currentMode === GRAPHIC_MODES.PAPER) {
-            // Paper: Faint pencil grid
             graphics.fillStyle(theme.GRID_EMPTY, 0.5);
             graphics.fillRect(0, 0, BLOCK_SIZE, BLOCK_SIZE);
             graphics.lineStyle(1, 0x555555, 0.3);
             graphics.strokeRect(0, 0, BLOCK_SIZE, BLOCK_SIZE);
 
-        } else if (currentMode === GRAPHIC_MODES.NEON) {
-            // Neon: Faint grid lines
-            graphics.fillStyle(theme.GRID_EMPTY, 1);
-            graphics.fillRect(0, 0, BLOCK_SIZE, BLOCK_SIZE);
-            graphics.lineStyle(1, theme.GRID_FILLED, 0.2);
-            graphics.strokeRect(0, 0, BLOCK_SIZE, BLOCK_SIZE);
         } else {
-            // Standard
+            // Fabric Empty
             graphics.fillStyle(theme.GRID_EMPTY, 1);
             graphics.fillRect(0, 0, BLOCK_SIZE, BLOCK_SIZE);
-            graphics.lineStyle(2, theme.GRID_FILLED, 0.2);
-            graphics.strokeRect(0, 0, BLOCK_SIZE, BLOCK_SIZE);
+            // Dotted grid look
+            graphics.fillStyle(0x000000, 0.1);
+            graphics.fillCircle(BLOCK_SIZE / 2, BLOCK_SIZE / 2, 2);
         }
         graphics.generateTexture('block_empty', BLOCK_SIZE, BLOCK_SIZE);
 
@@ -243,7 +245,6 @@ class GameScene extends Phaser.Scene {
         graphics.clear();
 
         if (currentMode === GRAPHIC_MODES.PAPER) {
-            // Paper Frozen: Scribbled gray
             graphics.fillStyle(0x888888, 0.8);
             graphics.fillRect(2, 2, BLOCK_SIZE - 4, BLOCK_SIZE - 4);
             graphics.lineStyle(3, 0x222222, 0.8);
@@ -253,30 +254,13 @@ class GameScene extends Phaser.Scene {
             graphics.moveTo(BLOCK_SIZE - 5, 5); graphics.lineTo(5, BLOCK_SIZE - 5);
             graphics.strokePath();
 
-        } else if (currentMode === GRAPHIC_MODES.NEON) {
-            // Neon Frozen: Dark with glowing X
-            graphics.fillStyle(0x222222, 0.9);
-            graphics.fillRect(2, 2, BLOCK_SIZE - 4, BLOCK_SIZE - 4);
-            graphics.lineStyle(2, 0xffffff, 1); // White Glow X
-            graphics.strokeRect(2, 2, BLOCK_SIZE - 4, BLOCK_SIZE - 4);
-            graphics.beginPath();
-            graphics.moveTo(5, 5); graphics.lineTo(BLOCK_SIZE - 5, BLOCK_SIZE - 5);
-            graphics.moveTo(BLOCK_SIZE - 5, 5); graphics.lineTo(5, BLOCK_SIZE - 5);
-            graphics.strokePath();
-            // Outer glow for frozen
-            graphics.lineStyle(2, 0xffffff, 0.3);
-            graphics.strokeRect(0, 0, BLOCK_SIZE, BLOCK_SIZE);
-
         } else {
-            // Standard Frozen
-            graphics.fillStyle(0x888888, 1); // Neutral gray
-            graphics.fillRect(0, 0, BLOCK_SIZE, BLOCK_SIZE);
-            graphics.lineStyle(4, 0x333333, 1);
-            graphics.strokeRect(2, 2, BLOCK_SIZE - 4, BLOCK_SIZE - 4);
-            graphics.lineStyle(3, 0x000000, 0.5);
-            graphics.beginPath();
-            graphics.moveTo(5, 5); graphics.lineTo(BLOCK_SIZE - 5, BLOCK_SIZE - 5);
-            graphics.moveTo(BLOCK_SIZE - 5, 5); graphics.lineTo(5, BLOCK_SIZE - 5);
+            // Fabric Frozen (Patch)
+            graphics.fillStyle(0x5D4037, 1); // Dark leather patch
+            graphics.fillRoundedRect(2, 2, BLOCK_SIZE - 4, BLOCK_SIZE - 4, 4);
+            graphics.lineStyle(3, 0xD4C1AD, 1); // Thick thread
+            graphics.moveTo(4, 4); graphics.lineTo(BLOCK_SIZE - 4, BLOCK_SIZE - 4);
+            graphics.moveTo(BLOCK_SIZE - 4, 4); graphics.lineTo(4, BLOCK_SIZE - 4);
             graphics.strokePath();
         }
         graphics.generateTexture('block_frozen', BLOCK_SIZE, BLOCK_SIZE);
@@ -335,7 +319,10 @@ class GameScene extends Phaser.Scene {
         document.documentElement.style.setProperty('--gb-pale', theme.CSS.pale);
 
         // Phaser Colors
-        this.cameras.main.setBackgroundColor(theme.BG);
+        // Robust check: use explicit hex string if available
+        let bgColor = theme.BG;
+        if (theme.CSS && theme.CSS.bg) bgColor = theme.CSS.bg;
+        this.cameras.main.setBackgroundColor(bgColor);
         this.scoreText.setColor(theme.TEXT);
         this.bestText.setColor(theme.TEXT);
         this.riskText.setColor(theme.TEXT);
@@ -405,20 +392,15 @@ class GameScene extends Phaser.Scene {
         const y = 60;
         const gap = 35;
 
-        // Mode 1: Standard
-        let btn1 = this.add.text(x, y, '1', { fontFamily: '"Press Start 2P"', fontSize: '12px', color: '#ffffff', backgroundColor: '#555555', padding: { x: 5, y: 5 } })
+        // Mode 1: Fabric (Replaces Standard) - 🧸
+        let btn1 = this.add.text(x, y, '🧸', { fontFamily: 'Arial, sans-serif', fontSize: '24px', padding: { x: 5, y: 5 } })
             .setInteractive({ useHandCursor: true })
-            .on('pointerdown', () => this.setGraphicMode(GRAPHIC_MODES.STANDARD));
+            .on('pointerdown', () => this.setGraphicMode(GRAPHIC_MODES.FABRIC));
 
-        // Mode 2: Paper
-        let btn2 = this.add.text(x + gap, y, '2', { fontFamily: '"Press Start 2P"', fontSize: '12px', color: '#000000', backgroundColor: '#fdfbf7', padding: { x: 5, y: 5 } })
+        // Mode 2: Paper - 📝
+        let btn2 = this.add.text(x + gap, y, '📝', { fontFamily: 'Arial, sans-serif', fontSize: '24px', padding: { x: 5, y: 5 } })
             .setInteractive({ useHandCursor: true })
             .on('pointerdown', () => this.setGraphicMode(GRAPHIC_MODES.PAPER));
-
-        // Mode 3: Neon
-        let btn3 = this.add.text(x + gap * 2, y, '3', { fontFamily: '"Press Start 2P"', fontSize: '12px', color: '#00ffff', backgroundColor: '#000000', padding: { x: 5, y: 5 } })
-            .setInteractive({ useHandCursor: true })
-            .on('pointerdown', () => this.setGraphicMode(GRAPHIC_MODES.NEON));
     }
 
     setGraphicMode(mode) {
