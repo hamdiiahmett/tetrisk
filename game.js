@@ -568,8 +568,39 @@ class GameScene extends Phaser.Scene {
         this.handShapes = [];
         const zoneWidth = this.game.config.width / 3;
         const yPos = GRID_OFFSET_Y + GRID_WIDTH + 80;
+
+        // Try to generate a set of shapes where at least one is placeable.
+        let attempts = 0;
+        let successfulSet = false;
+        let proposedShapes = [];
+
+        while (!successfulSet && attempts < 20) {
+            attempts++;
+            proposedShapes = [];
+            for (let i = 0; i < 3; i++) {
+                proposedShapes.push(Phaser.Utils.Array.GetRandom(SHAPES));
+            }
+
+            // Check if at least one shape can be placed somewhere
+            let canPlaceAny = false;
+
+            // Optimization: Only check playability if grid is somewhat full, otherwise any small shape fits.
+            // But to be sure, we just check all.
+            for (let shapeDef of proposedShapes) {
+                if (this.canShapeFitAnywhere(shapeDef)) {
+                    canPlaceAny = true;
+                    break;
+                }
+            }
+
+            if (canPlaceAny) {
+                successfulSet = true;
+            }
+        }
+
+        // Use the successful set or fallback to the last generated random set if we exceeded attempts (should be rare)
         for (let i = 0; i < 3; i++) {
-            let shapeDef = Phaser.Utils.Array.GetRandom(SHAPES);
+            let shapeDef = proposedShapes[i];
             let shapeObj = this.createShapeObject(shapeDef, 0.6);
             shapeObj.x = zoneWidth * i + zoneWidth / 2; shapeObj.y = yPos;
             shapeObj.homeX = shapeObj.x; shapeObj.homeY = shapeObj.y; shapeObj.inHandIndex = i;
@@ -578,6 +609,16 @@ class GameScene extends Phaser.Scene {
             this.add.existing(shapeObj);
             this.handShapes.push(shapeObj);
         }
+    }
+
+    canShapeFitAnywhere(shapeCoords) {
+        // Iterate all grid cells to see if 'shapeCoords' fits at (r,c)
+        for (let r = 0; r < GRID_SIZE; r++) {
+            for (let c = 0; c < GRID_SIZE; c++) {
+                if (this.canPlace(shapeCoords, r, c)) return true;
+            }
+        }
+        return false;
     }
 
     createShapeObject(coords, scale = 1) {
@@ -626,13 +667,29 @@ class GameScene extends Phaser.Scene {
             this.handShapes[shape.inHandIndex] = null;
             shape.destroy();
             SOUNDS.PLACE();
-            this.checkLines();
-            this.checkGameOver();
-            if (this.handShapes.every(s => s === null)) { this.spawnHandShapes(); this.checkGameOver(); }
+
+            // Check lines first. If lines are cleared, we must wait for animation to finish.
+            const linesCleared = this.checkLines(() => {
+                // This callback runs AFTER lines are cleared and animation is done.
+                this.checkRefillAndGameOver();
+            });
+
+            // If no lines were cleared, we proceed immediately.
+            if (!linesCleared) {
+                this.checkRefillAndGameOver();
+            }
+
         } else {
             this.tweens.add({ targets: shape, x: shape.homeX, y: shape.homeY, scaleX: 0.6, scaleY: 0.6, duration: 200, ease: 'Cubic.out' });
         }
         this.dragObj = null;
+    }
+
+    checkRefillAndGameOver() {
+        if (this.handShapes.every(s => s === null)) {
+            this.spawnHandShapes();
+        }
+        this.checkGameOver();
     }
 
     canPlace(coords, row, col) {
@@ -649,7 +706,7 @@ class GameScene extends Phaser.Scene {
         this.updateScore(10 + coords.length);
     }
 
-    checkLines() {
+    checkLines(onCompleteCallback) {
         let candidateRows = [], candidateCols = [];
 
         // 1. Identify all fully filled rows/cols (ignoring frozen status for a moment)
@@ -660,19 +717,17 @@ class GameScene extends Phaser.Scene {
             if (full) candidateCols.push(c);
         }
 
-        // 2. Filter Rows: A row is valid ONLY IF it has no 'active' frozen blocks (blocks that are not being cleared by a a column)
-        // If a row contains a frozen block, that frozen block needs the column to be in candidateCols. If not, the WHOLE ROW is blocked.
+        // 2. Filter Rows:
         let validRows = candidateRows.filter(r => {
             for (let c = 0; c < GRID_SIZE; c++) {
                 if (gameState.grid[r][c] === 2) {
-                    // Frozen block found. Is the intersecting column also full?
                     if (!candidateCols.includes(c)) return false; // Blocked!
                 }
             }
             return true;
         });
 
-        // 3. Filter Cols: Similar logic.
+        // 3. Filter Cols:
         let validCols = candidateCols.filter(c => {
             for (let r = 0; r < GRID_SIZE; r++) {
                 if (gameState.grid[r][c] === 2) {
@@ -683,18 +738,17 @@ class GameScene extends Phaser.Scene {
         });
 
         if (validRows.length > 0 || validCols.length > 0) {
-            this.clearLines(validRows, validCols);
+            this.clearLines(validRows, validCols, onCompleteCallback);
             SOUNDS.CLEAR();
             this.updateScore((validRows.length + validCols.length) * 100);
+            return true; // Lines were found and are being cleared
         }
+        return false; // No lines found
     }
 
-    clearLines(rows, cols) {
+    clearLines(rows, cols, onCompleteCallback) {
         let cellsToClear = [];
         let frozenCleared = false;
-
-        // Since we already validated the locking logic in checkLines, we can just clear everything in valid rows/cols.
-        // Frozen blocks in these lists are strictly those that met the condition.
 
         rows.forEach(r => {
             for (let c = 0; c < GRID_SIZE; c++) {
@@ -710,18 +764,31 @@ class GameScene extends Phaser.Scene {
         });
 
         let unique = new Set(cellsToClear.map(o => `${o.r},${o.c}`));
+        let totalAnimations = unique.size;
+        let completedAnimations = 0;
+
+        // Note: Using a simple counter might be safer than one big callback if we had multiple distinct animations,
+        // but since we iterate unique keys, we can just trigger callback on the last tween or use a delayedCall.
+        // A cleaner way for the logic flow:
+
         unique.forEach(key => {
             let [r, c] = key.split(',').map(Number);
             this.tweens.add({
                 targets: this.gridBlocks[r][c].filled, alpha: 0, duration: 100, yoyo: true, repeat: 2,
-                onComplete: () => this.setGridCell(r, c, 0)
+                onComplete: () => {
+                    // This runs after EACH block tween. We destroy the content after visually clearing.
+                    this.setGridCell(r, c, 0);
+                    completedAnimations++;
+                    if (completedAnimations === unique.size) {
+                        if (frozenCleared) {
+                            gameState.frozenBlock = null;
+                            this.secondsLeft = 60;
+                        }
+                        if (onCompleteCallback) onCompleteCallback();
+                    }
+                }
             });
         });
-
-        if (frozenCleared) {
-            gameState.frozenBlock = null;
-            this.secondsLeft = 60;
-        }
     }
 
     updateScore(points) {
