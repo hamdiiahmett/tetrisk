@@ -302,6 +302,9 @@ class GameScene extends Phaser.Scene {
     }
 
     rotateTheme() {
+        // Stop rotation for Fabric mode (keep it constant)
+        if (currentMode === GRAPHIC_MODES.FABRIC) return;
+
         // Rotate within the current mode's palettes
         currentPaletteIndex++;
         this.applyTheme();
@@ -397,8 +400,8 @@ class GameScene extends Phaser.Scene {
             .setInteractive({ useHandCursor: true })
             .on('pointerdown', () => this.setGraphicMode(GRAPHIC_MODES.FABRIC));
 
-        // Mode 2: Paper - 📝
-        let btn2 = this.add.text(x + gap, y, '📝', { fontFamily: 'Arial, sans-serif', fontSize: '24px', padding: { x: 5, y: 5 } })
+        // Mode 2: Paper - 🌸
+        let btn2 = this.add.text(x + gap, y, '🌸', { fontFamily: 'Arial, sans-serif', fontSize: '24px', padding: { x: 5, y: 5 } })
             .setInteractive({ useHandCursor: true })
             .on('pointerdown', () => this.setGraphicMode(GRAPHIC_MODES.PAPER));
     }
